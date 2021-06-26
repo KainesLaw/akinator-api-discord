@@ -1,4 +1,4 @@
-const rp = require('request-promise');
+const axios = require('axios');
 
 /**
  * gets the server automatically, so we don't rely on hard coded values.
@@ -11,18 +11,18 @@ const getServer = async (region) => {
     const [language, themeName] = split;
 
     const url = `https://${language}.akinator.com`;
-    const page = await rp.get(url);
+    const { data } = await axios.get(url);
 
     const regex = /\[{"translated_theme_name":"[\s\S]*","urlWs":"https:\\\/\\\/srv[0-9]+\.akinator\.com:[0-9]+\\\/ws","subject_id":"[0-9]+"}]/gim;
-    const parsed = JSON.parse(page.match(regex));
+    const parsed = JSON.parse(data.match(regex));
 
     if (!parsed || !parsed[0] || !parsed[0].urlWs || parsed.length <= 0) return undefined;
 
-    const found = parsed.find(theme => theme.translated_theme_name.toLowerCase() === themeName);
+    const found = parsed.find((theme) => theme.translated_theme_name.toLowerCase() === themeName);
 
     const obj = {
       url,
-      urlWs: themeName && found && found.UrlWs ? found.UrlWs : parsed[0].urlWs,
+      urlWs: themeName && found && found.urlWs ? found.urlWs : parsed[0].urlWs,
     };
 
     return obj;
@@ -31,7 +31,6 @@ const getServer = async (region) => {
   }
   return undefined;
 };
-
 
 /**
  * Returns the id from the correct region.
@@ -47,11 +46,7 @@ const regionURL = async (akinatorRegion) => {
   switch (region) {
     case 'en':
     case 'english':
-<<<<<<< HEAD
       return getServer('en');
-=======
-      return { uri: 'en.akinator.com', urlApiWs: 'srv2.akinator.com:9317' };
->>>>>>> 6f9dbad68bc70534f44f60b75c2b8efa148c4da7
 
     case 'en_objects':
     case 'english_objects':
@@ -79,11 +74,7 @@ const regionURL = async (akinatorRegion) => {
 
     case 'es':
     case 'spanish':
-<<<<<<< HEAD
       return getServer('es');
-=======
-      return { uri: 'es.akinator.com', urlApiWs: 'srv6.akinator.com:9402' };
->>>>>>> 6f9dbad68bc70534f44f60b75c2b8efa148c4da7
 
     case 'es_animals':
     case 'spanish_animals':
@@ -131,7 +122,6 @@ const regionURL = async (akinatorRegion) => {
 
     case 'pl':
     case 'polish':
-<<<<<<< HEAD
       return getServer('pl');
 
     case 'pt':
@@ -141,28 +131,17 @@ const regionURL = async (akinatorRegion) => {
     case 'ru':
     case 'russian':
       return getServer('ru');
-=======
-      return { uri: 'pl.akinator.com', urlApiWs: 'srv14.akinator.com:9368' };
-
-    case 'pt':
-    case 'portuguese':
-      return { uri: 'pt.akinator.com', urlApiWs: 'srv11.akinator.com:9401' };
-
-    case 'ru':
-    case 'russian':
-      return { uri: 'ru.akinator.com', urlApiWs: 'srv12.akinator.com:9398' };
->>>>>>> 6f9dbad68bc70534f44f60b75c2b8efa148c4da7
 
     case 'tr':
     case 'turkish':
       return getServer('tr');
 
+    case 'id':
+    case 'indonesia':
+      return getServer('id');
+
     default:
-<<<<<<< HEAD
       return region ? getServer(region) : getServer('en');
-=======
-      return { uri: 'en.akinator.com', urlApiWs: 'srv2.akinator.com:9317' };
->>>>>>> 6f9dbad68bc70534f44f60b75c2b8efa148c4da7
   }
 };
 
